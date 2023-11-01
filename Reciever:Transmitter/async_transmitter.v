@@ -2,11 +2,9 @@ module async_transmitter(
     input clk,
     input rst,
     input TxD_start,
-	input test_in,
     input [7:0] TxD_data,
     output TxD,
     output TxD_busy,
-	output test_out
 );
 
 // Assert TxD_start for (at least) one clock cycle to start transmission of TxD_data
@@ -21,7 +19,6 @@ BaudTickGen #(ClkFrequency, Baud, Oversampling) tickgen(.clk(clk), .rst(rst), .e
 reg [3:0] TxD_state = 0;
 wire TxD_ready = (TxD_state==0);
 assign TxD_busy = ~TxD_ready;
-assign test_out = test_in;
 
 reg [7:0] TxD_shift = 0;
 always @(posedge clk)

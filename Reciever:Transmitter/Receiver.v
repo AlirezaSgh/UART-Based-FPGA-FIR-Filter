@@ -1,4 +1,4 @@
-module receiver_dp(input clk, rst,RX, cnt_en, shreg_en, cnt_rst, output [7:0] out, output counter_done);
+module receiver_dp(input clk, rst, RX, cnt_en, shreg_en, cnt_rst, output [7:0] out, output counter_done);
     wire counter_enable, sampler_out, sampling_done, write_reg, counter_rst;
     assign counter_rst = cnt_rst & rst;
     assign counter_enable = sampling_done & cnt_en;
