@@ -13,7 +13,6 @@ module BaudTickGen
         else if(enable)
             count = count + 1;
     end
-
     always @(count) begin
 	tick = 0;
 

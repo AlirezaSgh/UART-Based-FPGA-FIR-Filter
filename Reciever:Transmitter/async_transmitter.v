@@ -4,7 +4,7 @@ module async_transmitter(
     input TxD_start,
     input [7:0] TxD_data,
     output TxD,
-    output TxD_busy,
+    output TxD_busy
 );
 
 // Assert TxD_start for (at least) one clock cycle to start transmission of TxD_data

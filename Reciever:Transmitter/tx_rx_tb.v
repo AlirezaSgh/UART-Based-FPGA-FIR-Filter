@@ -6,7 +6,7 @@ module tx_rx_tb();
     reg test_in = 1;
     wire TxD, TxD_busy, test_out, RxD_data_ready;
     wire [7:0] RxD_out;
-    async_transmitter Tx(clk, rst, TxD_start,test_in, TxD_data, TxD, TxD_busy, test_out);
+    async_transmitter Tx(clk, rst, TxD_start, TxD_data, TxD, TxD_busy);
 
     async_receiver Rx(clk, rst, TxD, RxD_data_ready, RxD_out);
     always #1 clk = !clk;
