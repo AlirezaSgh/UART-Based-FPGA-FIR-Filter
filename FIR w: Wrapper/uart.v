@@ -1,11 +1,14 @@
-module uart(input clk, rst, RxD, TxD_start, RxD_data_ready, input[7:0] TxD_data, output [7:0] RxD_data, output TxD, TxD_busy);
+module uart(input clk, rst, RxD, TxD_start, 
+            input[7:0] TxD_data,
+            output [7:0] RxD_data,
+            output TxD, TxD_busy, RxD_data_ready);
 async_transmitter Tx(
     clk,
     rst,
     TxD_start,
     TxD_data,
     TxD,
-    TxD_busy,
+    TxD_busy
 );
 async_receiver Rx(
     clk,

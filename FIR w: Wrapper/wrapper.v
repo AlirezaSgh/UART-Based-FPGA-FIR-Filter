@@ -6,15 +6,21 @@ module wrapper_dp(  input clk, rst, rx_done, out_reg_en, input[2:0] out_mux_sel,
     nbit_reg #8 MSB_reg(clk, rst, rx_done, fir_data_in[7:0],fir_data_in[15:8]),
                 LSB_reg(clk, rst, rx_done, rx_data, fir_data_in[7:0]);
     nbit_reg #38 out_reg(clk, rst, out_reg_en, fir_data_out, out_reg_out);
-    mux5to1 out_mux(out_mux_sel, {out_reg_out,out_reg_out,out_reg_out[37:32]}, 
-                                    out_reg_out[31:24], out_reg_out[23:16], out_reg_out[15:8], out_reg_out[7:0], tx_data);
+    mux5to1 out_mux(out_mux_sel, 
+                    {out_reg_out[37],out_reg_out[37],out_reg_out[37:32]}, 
+                    out_reg_out[31:24], 
+                    out_reg_out[23:16], 
+                    out_reg_out[15:8], 
+                    out_reg_out[7:0], 
+                    tx_data);
 
 
 endmodule
 
 module wrapper_sm(  input clk, rst, rx_done, output_valid, txd_busy, 
                     output reg input_valid, out_reg_en, txd_start, output reg[2:0] out_mux_sel);
-    parameter [2:0] Idle = 3'd0, Rx_Data2 = 3'd1, Start_FIR = 3'd2, Wait_for_FIR = 3'd3, Transmit = 3'd4, Wait_for_transmission = 3'd5;
+    parameter [2:0] Idle = 3'd0, Save_Rx_Data1 = 3'd1,Rx_Data2 = 3'd2, Save_Rx_Data2 = 3'd3 ,
+                    Start_FIR = 3'd4, Wait_for_FIR = 3'd5, Transmit = 3'd6, Wait_for_transmission = 3'd7;
     reg [2:0] pstate, nstate;
     reg cen, cout;
 
@@ -25,8 +31,10 @@ module wrapper_sm(  input clk, rst, rx_done, output_valid, txd_busy,
         cen <= 1'b0;
         txd_start <= 1'b0;
         case (pstate)
-            Idle: nstate <= rx_done ? Rx_Data2 : Idle;
-            Rx_Data2: nstate <= rx_done ? Start_FIR : Rx_Data2;
+            Idle: nstate <= rx_done ? Save_Rx_Data1 : Idle;
+            Save_Rx_Data1: nstate <= ~rx_done ? Rx_Data2 : Save_Rx_Data1;
+            Rx_Data2: nstate <= rx_done ? Save_Rx_Data2 : Rx_Data2;
+            Save_Rx_Data2: nstate <= ~rx_done ? Start_FIR : Save_Rx_Data2;
             Start_FIR: begin 
                 nstate <= Wait_for_FIR;
                 input_valid <= 1'b1;
