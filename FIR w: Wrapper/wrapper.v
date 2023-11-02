@@ -24,7 +24,21 @@ module wrapper_sm(  input clk, rst, rx_done, output_valid, txd_busy,
     reg [2:0] pstate, nstate;
     reg cen, cout;
 
-    always @(pstate, rx_done, output_valid, txd_busy, out_mux_sel) begin
+    always @(posedge clk) begin
+        
+        if(rst)
+            out_mux_sel <= 3'b0;
+        if(cen) begin
+            cout <= 1'b0;
+            out_mux_sel <= out_mux_sel + 3'd1;
+        end
+        if(out_mux_sel == 3'd5) begin
+            out_mux_sel <= 3'd0;
+            cout <= 1'b1;
+        end
+    end
+
+    always @(pstate, rx_done, output_valid, txd_busy, out_mux_sel, cout) begin
         nstate <= Idle;
         input_valid <= 1'b0;
         out_reg_en <= 1'b0;
@@ -68,15 +82,6 @@ module wrapper_sm(  input clk, rst, rx_done, output_valid, txd_busy,
         else pstate <= nstate;
     end
     
-    always @(posedge clk) begin
-        cout <= 1'b0;
-        if(cen)
-        out_mux_sel <= out_mux_sel + 3'd1;
-        if(out_mux_sel <= 3'd5) begin
-            out_mux_sel <= 3'd0;
-            cout <= 1'b1;
-        end
-    end
 endmodule
 
 module wrapper(input clk, rst, rx_done, output_valid, txd_busy, input[7:0] rx_data, input[37:0] fir_data_out,
