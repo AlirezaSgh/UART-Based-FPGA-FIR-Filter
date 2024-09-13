@@ -1,0 +1,3 @@
+[submodule "FIR-Filter-Verilog"]
+	path = FIR-Filter-Verilog
+	url = https://github.com/AlirezaSgh/FIR-Filter-Verilog
